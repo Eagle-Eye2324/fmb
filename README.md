@@ -7,10 +7,10 @@ Twitch: aBoredDev
 ## About
 Flight Management Bot is a Discord bot designed for Virtual Airlines that primarily use Discord.
 
-## Current Features
+### Current Features
 - Flight Logging
 
-## Planned Features
+### Planned Features
 - Flight planning
 - Callsign management
 - Routes
