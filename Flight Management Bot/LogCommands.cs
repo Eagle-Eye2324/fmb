@@ -18,6 +18,10 @@ namespace FlightManagementBot
             // WIP - Not yet fully implemented.
             // TODO: Implement input sanitization for times
             // TODO: Implement a check on whether or not the ICAO codes supplied are valid
+
+            // let's trigger a typing indicator to let users know we're working
+            await ctx.TriggerTypingAsync();
+
             bool good = true;
 
             int[] dtimedigits = dtime.ToString().ToCharArray().Select(x => (int)Char.GetNumericValue(x)).ToArray();
@@ -148,10 +152,38 @@ namespace FlightManagementBot
             // If everything is good, then log the flight
             if (good)
             {
-                DisccordEmbedBuilder embedbuilder = DiscordEmbedBuilder();
-                embedbuilder.EmbedAuthor.Name = ctx.User.Mention;
+                // Create an embed builder
+                DiscordEmbedBuilder embedBuilder = new DiscordEmbedBuilder();
 
-                await ctx.RespondAsync($"```css\nPilot: { ctx.User.Username }\nDeparted from: { dicao }\nAt: { dtime }\nArrived in: { aicao }\nAt: { atime }\n```");
+                // Create the color blue
+                DiscordColor colorBlue = new DiscordColor("0000FF");
+
+                // Set the things for the embed which will always be the same
+                embedBuilder.WithFooter("Logged by @Flight Management Bot#4438 ").WithColor(colorBlue).WithThumbnailUrl(ctx.User.AvatarUrl).WithTitle("Flight Log");
+
+                embedBuilder.AddField("Departed from:", dicao, true);
+                if(dtimedigits.Length == 4)
+                {
+                    embedBuilder.AddField("At:", $"{ dtimedigits[0] }{ dtimedigits[1] }:{ dtimedigits[2] }{ dtimedigits[3] }", true);
+                }
+                else
+                {
+                    embedBuilder.AddField("At:", $"{ dtimedigits[0] }:{ dtimedigits[1] }{ dtimedigits[2] }", true);
+                }
+                embedBuilder.AddField("Arrived in:", aicao, true);
+                if(atimedigits.Length == 4)
+                {
+                    embedBuilder.AddField("At:", $"{ atimedigits[0] }{ atimedigits[1] }:{ atimedigits[2] }{ atimedigits[3] }", true);
+                }
+                else
+                {
+                    embedBuilder.AddField("At:", $"{ atimedigits[0] }:{ atimedigits[1] }{ atimedigits[2] }", true);
+                }
+
+                DiscordEmbed embed = embedBuilder.Build();
+
+                // $"```css\nPilot: { ctx.User.Username }\nDeparted from: { dicao }\nAt: { dtime }\nArrived in: { aicao }\nAt: { atime }\n```"
+                await ctx.RespondAsync(null, false, embed);
             }
         }
     }
