@@ -12,7 +12,7 @@ namespace FlightManagementBot
 {
     public class LogCommands
     {
-        [Command("log")]
+        [Command("log"), Description("Logs a flight")]
         public async Task Log(CommandContext ctx, int dtime, int atime, string dicao, string aicao)
         {
             // WIP - Not yet fully implemented.
@@ -25,7 +25,7 @@ namespace FlightManagementBot
             bool good = true;
 
             int[] dtimedigits = dtime.ToString().ToCharArray().Select(x => (int)Char.GetNumericValue(x)).ToArray();
-            int[] atimedigits = dtime.ToString().ToCharArray().Select(x => (int)Char.GetNumericValue(x)).ToArray();
+            int[] atimedigits = atime.ToString().ToCharArray().Select(x => (int)Char.GetNumericValue(x)).ToArray();
 
             // Sanitize departure time
             if(dtimedigits.Length == 3)
@@ -159,7 +159,7 @@ namespace FlightManagementBot
                 DiscordColor colorBlue = new DiscordColor("0000FF");
 
                 // Set the things for the embed which will always be the same
-                embedBuilder.WithFooter("Logged by @Flight Management Bot#4438 ").WithColor(colorBlue).WithThumbnailUrl(ctx.User.AvatarUrl).WithTitle("Flight Log");
+                embedBuilder.WithFooter("Logged by @Flight Management Bot#4438 ").WithColor(colorBlue).WithThumbnailUrl(ctx.User.AvatarUrl).WithTitle("Flight Log").WithAuthor($"Pilot: { ctx.User.Mention }");
 
                 embedBuilder.AddField("Departed from:", dicao, true);
                 if(dtimedigits.Length == 4)
@@ -182,6 +182,7 @@ namespace FlightManagementBot
 
                 DiscordEmbed embed = embedBuilder.Build();
 
+                // Old log format
                 // $"```css\nPilot: { ctx.User.Username }\nDeparted from: { dicao }\nAt: { dtime }\nArrived in: { aicao }\nAt: { atime }\n```"
                 await ctx.RespondAsync(null, false, embed);
             }
